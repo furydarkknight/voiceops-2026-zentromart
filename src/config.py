@@ -7,11 +7,10 @@ from pathlib import Path
 AGENT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DATASET_DIR = Path(r"c:\Users\admin\Desktop\Capstone_Project_Dataset_FTTT_2026")
 
-DATASET_DIR = Path(os.environ.get("DATASET_DIR", str(DEFAULT_DATASET_DIR))).resolve()
-if not DATASET_DIR.exists():
-    # Fallback to local data dir if bundled
-    if (AGENT_ROOT / "data").exists():
-        DATASET_DIR = AGENT_ROOT
+if (AGENT_ROOT / "kb").exists():
+    DATASET_DIR = AGENT_ROOT
+else:
+    DATASET_DIR = Path(os.environ.get("DATASET_DIR", str(DEFAULT_DATASET_DIR))).resolve()
 
 KB_DIR = DATASET_DIR / "kb"
 DATA_DIR = DATASET_DIR / "data"

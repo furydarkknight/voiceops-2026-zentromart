@@ -115,6 +115,6 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"\n=======================================================")
     print(f"  ZentroMart VoiceOps 2026 Web Server Running!")
-    print(f"  URL: http://127.0.0.1:{port}")
+    print(f"  URL: http://0.0.0.0:{port}")
     print(f"=======================================================\n")
-    app.run(host="127.0.0.1", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False)
