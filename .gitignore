@@ -1,0 +1,21 @@
+# Environment & Secrets (Crucial: never upload real API keys!)
+.env
+*.env.local
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+build/
+dist/
+
+# Test audio temp files
+test_*.wav
+
+# OS files
+.DS_Store
+Thumbs.db

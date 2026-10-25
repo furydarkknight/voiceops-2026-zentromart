@@ -1,0 +1,42 @@
+[
+  {
+    "input_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_inputs\\call_01_wallet_refund.wav",
+    "heard": "How fast are refunds to the ZentroMart Wallet?",
+    "reply_text": "Instant, within 2 hours of initiation.",
+    "speech_text": "Instant, within 2 hours of initiation.",
+    "output_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_outputs\\batch_run\\reply_call_01_wallet_refund.wav",
+    "evidence_used": [
+      "REF-2",
+      "KB-00.1",
+      "PAY-4",
+      "REF-3"
+    ],
+    "decision": "answer",
+    "tool_calls": []
+  },
+  {
+    "input_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_inputs\\call_02_late_express.wav",
+    "heard": "My express order arrived a day late. Do I get anything back?",
+    "reply_text": "Yes. If you paid the ₹79 express fee, it is credited to ZentroMart Wallet automatically within 48 hours. ZentroMart Plus members pay no fee, so get no credit.",
+    "speech_text": "Yes. If you paid the 79 rupees express fee, it is credited to ZentroMart Wallet automatically within 48 hours. ZentroMart Plus members pay no fee, so get no credit.",
+    "output_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_outputs\\batch_run\\reply_call_02_late_express.wav",
+    "evidence_used": [
+      "DEL-4",
+      "DEL-1",
+      "CAN-1",
+      "IDV-1"
+    ],
+    "decision": "answer",
+    "tool_calls": []
+  },
+  {
+    "input_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_inputs\\call_03_midnight_delivery.wav",
+    "heard": "Can I schedule a delivery at midnight?",
+    "reply_text": "Sorry, I don't have information about that. I can connect you to a colleague who can help.",
+    "speech_text": "Sorry, I don't have information about that. I can connect you to a colleague who can help.",
+    "output_audio": "C:\\Users\\admin\\.gemini\\antigravity\\scratch\\voiceops_agent\\sample_outputs\\batch_run\\reply_call_03_midnight_delivery.wav",
+    "evidence_used": [],
+    "decision": "answer",
+    "tool_calls": []
+  }
+]

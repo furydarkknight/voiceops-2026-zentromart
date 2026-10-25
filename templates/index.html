@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZentroMart VoiceOps 2026 - AI Voice Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --panel-bg: #1e293b;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --accent: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .brand h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .status-tags {
+      display: flex;
+      gap: 8px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-live { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-tts { background: rgba(139, 92, 246, 0.15); color: var(--accent); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+    }
+    @media (max-width: 960px) {
+      .main-container { grid-template-columns: 1fr; }
+    }
+
+    /* Left Panel: Chat and Audio Call */
+    .chat-panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 120px);
+      overflow: hidden;
+    }
+
+    .call-bar {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .caller-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .call-status {
+      font-size: 12px;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    /* Preset questions */
+    .presets-bar {
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .preset-chip {
+      background: rgba(51, 65, 85, 0.7);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-chip:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Messages container */
+    .messages-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .message {
+      max-width: 80%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      line-height: 1.5;
+      font-size: 14px;
+      position: relative;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .message.assistant {
+      align-self: flex-start;
+      background: #334155;
+      color: #f8fafc;
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .message .meta {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 6px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .speak-btn {
+      background: none;
+      border: none;
+      color: #93c5fd;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .speak-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+    /* Input area */
+    .input-bar {
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mic-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #334155;
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .mic-btn:hover { background: #475569; }
+    .mic-btn.recording {
+      background: var(--danger);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .text-input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 24px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .text-input:focus { border-color: var(--primary); }
+    .send-btn {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .send-btn:hover { background: var(--primary-hover); }
+
+    /* Right Sidebar: Context, Tools & Evidence */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    .info-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .info-card h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-muted); }
+    .detail-val { font-weight: 600; }
+
+    .chunk-tag {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      color: #93c5fd;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin: 4px 4px 4px 0;
+      font-family: monospace;
+    }
+    .ticket-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+    .ticket-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--warning);
+      margin-bottom: 4px;
+    }
+    .ticket-desc {
+      font-size: 12px;
+      color: #fde68a;
+      line-height: 1.4;
+    }
+
+    /* Sound visualizer wave */
+    .sound-wave {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 16px;
+    }
+    .sound-wave span {
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      animation: wave 1s infinite ease-in-out;
+    }
+    .sound-wave span:nth-child(2) { animation-delay: 0.2s; }
+    .sound-wave span:nth-child(3) { animation-delay: 0.4s; }
+    .sound-wave span:nth-child(4) { animation-delay: 0.6s; }
+    @keyframes wave {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">ZM</div>
+      <div>
+        <h1>ZentroMart VoiceOps 2026</h1>
+        <p>Grounded Voice AI Support Agent · IIT Guwahati × Gnani.ai</p>
+      </div>
+    </div>
+    <div class="status-tags">
+      <span class="badge badge-live">● System Active</span>
+      <span class="badge badge-tts">🎙️ Gnani TTS (timbre-v2.5)</span>
+      <span class="badge badge-live">📅 Date: 20 Oct 2026</span>
+    </div>
+  </header>
+
+  <div class="main-container">
+    
+    <!-- Left Chat & Voice Interface -->
+    <div class="chat-panel">
+      <div class="call-bar">
+        <div class="caller-info">
+          <div class="avatar">🎧</div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px;">ZentroMart Spoken Support Line</div>
+            <div class="call-status" id="call-status">● Connected (Kaveri Voice)</div>
+          </div>
+        </div>
+        <div id="wave-container" style="display: none;" class="sound-wave">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <!-- Quick Preset Buttons -->
+      <div class="presets-bar">
+        <button class="preset-chip" onclick="sendPreset('Hello, mujhe order ke baare mein help chahiye.')">1. Opening Greeting</button>
+        <button class="preset-chip" onclick="sendPreset('Order number hai 8978 2837.')">2. Give Order ID</button>
+        <button class="preset-chip" onclick="sendPreset('Last four digits 4533 hain.')">3. Verify Phone (4533)</button>
+        <button class="preset-chip" onclick="sendPreset('Maine TV damage report kiya tha. Replacement approve kar do na?')">4. High Damage Escalation</button>
+        <button class="preset-chip" onclick="sendPreset('How fast are refunds to the ZentroMart Wallet?')">5. Wallet Refund (REF-2)</button>
+        <button class="preset-chip" onclick="sendPreset('Can I schedule a delivery at midnight?')">6. Midnight Delivery (Unanswerable)</button>
+        <button class="preset-chip" onclick="sendPreset('credit card wala refund 17 October 2026 ko shuru hua, kab tak aa jaana chahiye?')">7. Business Days (Card Refund)</button>
+      </div>
+
+      <!-- Chat History -->
+      <div class="messages-container" id="messages-container">
+        <div class="message assistant">
+          Hello! I am ZentroMart's AI customer support assistant. How can I assist you with your orders or policies today?
+          <div class="meta">
+            <span>Agent · Kaveri</span>
+            <button class="speak-btn" onclick="speakText(this.parentElement.parentElement.innerText)">🔊 Listen</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="input-bar">
+        <button class="mic-btn" id="mic-btn" onclick="toggleVoiceRecording()" title="Click to speak">🎙️</button>
+        <input type="text" class="text-input" id="text-input" placeholder="Type customer question or click 🎙️ to talk..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Live Context, Verification, & Chunks -->
+    <div class="sidebar">
+      
+      <!-- Verification & Session Card -->
+      <div class="info-card">
+        <h3>Caller Authentication <span id="auth-status-badge" class="badge" style="background:#475569; color:#fff;">Unverified</span></h3>
+        <div class="detail-row">
+          <span class="detail-label">Active Order ID:</span>
+          <span class="detail-val" id="active-order-id">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Identity Verified:</span>
+          <span class="detail-val" id="is-verified">False</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Customer Name:</span>
+          <span class="detail-val" id="customer-name">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">ZentroMart Plus:</span>
+          <span class="detail-val" id="is-plus">—</span>
+        </div>
+      </div>
+
+      <!-- Grounded Chunks Card -->
+      <div class="info-card">
+        <h3>Document Provenance</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Section IDs cited from 21 policy docs:</p>
+        <div id="chunks-container">
+          <span class="chunk-tag">[STY-1] Opening</span>
+        </div>
+      </div>
+
+      <!-- Escalations & Tickets Card -->
+      <div class="info-card">
+        <h3>Escalations & Tickets</h3>
+        <div id="tickets-container">
+          <p style="font-size: 12px; color: var(--text-muted);">No human escalation active.</p>
+        </div>
+      </div>
+
+      <!-- Technical Guide -->
+      <div class="info-card" style="background: rgba(30, 41, 59, 0.4);">
+        <h3>Audio Playback Guide</h3>
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+          Replies are voiced automatically using the speech synthesis engine. Click any <b>🔊 Listen</b> button to replay the speech.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let conversationId = "call_" + Math.random().toString(36).substring(2, 9);
+    let isRecording = false;
+    let recognition = null;
+
+    // Check Web Speech API for instant voice recognition in browser
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-IN';
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('text-input').value = transcript;
+        sendMessage();
+      };
+
+      recognition.onend = function() {
+        isRecording = false;
+        document.getElementById('mic-btn').classList.remove('recording');
+        document.getElementById('call-status').innerText = "● Connected (Kaveri Voice)";
+      };
+    }
+
+    function toggleVoiceRecording() {
+      if (!recognition) {
+        alert("Speech Recognition is not supported in this browser. Please type your message.");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        isRecording = true;
+        document.getElementById('mic-btn').classList.add('recording');
+        document.getElementById('call-status').innerText = "🎙️ Listening to your voice...";
+        recognition.start();
+      }
+    }
+
+    function sendPreset(text) {
+      document.getElementById('text-input').value = text;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('text-input');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      // Add user message to UI
+      appendMessage(text, 'user');
+
+      // Call API
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, conversation_id: conversationId })
+        });
+        const data = await response.json();
+        
+        // Add assistant message to UI
+        appendMessage(data.reply, 'assistant', data.evidence_used);
+
+        // Update state in UI
+        updateSidebar(data);
+
+        // Speak the reply out loud!
+        speakText(data.speech_text || data.reply);
+
+      } catch (err) {
+        appendMessage("Error communicating with server: " + err.message, 'assistant');
+      }
+    }
+
+    function appendMessage(text, sender, chunks=[]) {
+      const container = document.getElementById('messages-container');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      
+      let html = text;
+      if (sender === 'assistant') {
+        html += `<div class="meta">
+          <span>Agent · Kaveri</span>
+          <button class="speak-btn" onclick="speakText('${text.replace(/'/g, "\\'")}')">🔊 Listen</button>
+        </div>`;
+      }
+      msgDiv.innerHTML = html;
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateSidebar(data) {
+      // Update order & verification
+      if (data.session) {
+        if (data.session.order_id) {
+          document.getElementById('active-order-id').innerText = data.session.order_id;
+        }
+        if (data.session.verified) {
+          document.getElementById('is-verified').innerText = 'True (Passed)';
+          document.getElementById('is-verified').style.color = '#10b981';
+          const badge = document.getElementById('auth-status-badge');
+          badge.innerText = 'Verified';
+          badge.style.background = '#10b981';
+        }
+        if (data.session.details) {
+          document.getElementById('customer-name').innerText = data.session.details.customer_first_name || 'Customer';
+          document.getElementById('is-plus').innerText = data.session.details.is_plus ? 'Yes (Plus)' : 'Standard';
+        }
+      }
+
+      // Update Chunks
+      if (data.evidence_used && data.evidence_used.length > 0) {
+        const cContainer = document.getElementById('chunks-container');
+        cContainer.innerHTML = '';
+        data.evidence_used.forEach(cid => {
+          const span = document.createElement('span');
+          span.className = 'chunk-tag';
+          span.innerText = `[${cid}]`;
+          cContainer.appendChild(span);
+        });
+      }
+
+      // Update Tickets
+      if (data.tool_calls && data.tool_calls.includes('create_ticket()')) {
+        const tContainer = document.getElementById('tickets-container');
+        tContainer.innerHTML = `
+          <div class="ticket-box">
+            <div class="ticket-title">⚠️ PRIORITY TICKET CREATED</div>
+            <div class="ticket-desc">Handover initiated for specialist review. Ticket ID generated.</div>
+          </div>
+        `;
+      }
+    }
+
+    // High quality speech synthesis function to play voice out loud
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+
+      // Show wave visualizer
+      const wave = document.getElementById('wave-container');
+      wave.style.display = 'flex';
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+
+      // Select female or en-IN voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const inVoice = voices.find(v => v.lang === 'en-IN' || v.name.includes('India') || v.name.includes('Kaveri')) ||
+                      voices.find(v => v.lang.startsWith('en')) || voices[0];
+      if (inVoice) {
+        utterance.voice = inVoice;
+      }
+
+      utterance.onend = function() {
+        wave.style.display = 'none';
+      };
+      utterance.onerror = function() {
+        wave.style.display = 'none';
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Preload voices
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+  </script>
+</body>
+</html>
