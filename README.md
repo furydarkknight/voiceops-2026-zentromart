@@ -4,10 +4,21 @@
 [![IIT Guwahati](https://img.shields.io/badge/IIT%20Guwahati-C%26A%20Club-orange.svg)](https://caciitg.com)
 [![Gnani.ai](https://img.shields.io/badge/Powered%20By-Gnani.ai-purple.svg)](https://gnani.ai)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://python.org)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-brightgreen.svg)](https://voiceops-2026-zentromart.onrender.com/)
 
 An end-to-end grounded conversational voice agent for **ZentroMart**, built for the **VoiceOps 2026 Capstone Challenge** (Consulting & Analytics Club, IIT Guwahati × Gnani.ai).
 
 The agent handles customer support across text and voice, enforcing identity-checked order lookups, precedence-weighted policy retrieval (RAG), holiday-aware business timelines, and automated speech processing via **Gnani STT and TTS**.
+
+---
+
+## 🌐 Live Interactive Demo
+
+Experience the live conversational support agent directly in your browser:  
+👉 **[https://voiceops-2026-zentromart.onrender.com/](https://voiceops-2026-zentromart.onrender.com/)**
+
+> ⏱️ **Note on First Load (Cold Start):**  
+> Since this app is hosted on Render's free tier, the server spins down during periods of inactivity. **The very first request may take approximately 50 seconds** to wake up the service. Subsequent interactions will be instantaneous!
 
 ---
 
@@ -143,3 +154,12 @@ python src/evaluate.py
 
 - **Short Report:** See [`report.pdf`](report.pdf) (or [`report.md`](report.md)) for the 4-page technical breakdown.
 - **Demo Walkthrough:** See [`demo_script.md`](demo_script.md) for the 2-minute video script.
+
+---
+
+## 💡 Feedback & Improvements Welcome!
+
+Feedback, issues, and ideas for improvements are warmly welcome! Whether it is fine-tuning the RAG retrieval rules, enhancing text normalization for regional dialects, or optimizing the web UI experience, please feel free to:
+- Open an **Issue** on GitHub for suggestions or bug reports.
+- Submit a **Pull Request** with enhancements and optimizations.
+- Share your thoughts on the live demo!
